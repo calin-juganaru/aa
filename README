@@ -1,0 +1,119 @@
+Călin-Vlad Jugănaru, 324CA
+
+# Strucutra arhivei:
+
++-- /in: fișierele ce conțin datele de intrare (numărul de noduri, numărul de muchii,
+|        nodul de pornire și tripletele (nod sursă, nod destintație, pondere))
+|           * test0.in: graf orientat aciclic rar, cu ponderi unitare
+|           * test1.in: graf orientat aciclic rar, cu ponderi pozitive și negative 
+|           * test2.in: graf orientat aciclic rar, cu ponderi pozitive mici
+|           * test3.in: graf orientat aciclic rar, cu ponderi pozitive mari
+|           * test4.in: graf orientat rar, cu cicluri și ponderi pozitive
+|           * test5.in: graf orientat aciclic dens, cu ponderi unitare
+|           * test6.in: graf orientat aciclic dens, cu ponderi pozitive și negative 
+|           * test7.in: graf orientat aciclic dens, cu ponderi pozitive mici
+|           * test8.in: graf orientat aciclic dens, cu ponderi pozitive mari
+|           * test9.in: graf orientat dens, cu cicluri și ponderi pozitive
+|      
+|        @ am generat numai grafuri orientate (și aciclice, în cea mai mare parte),
+|          având proprietățile de mai sus, pentru a putea acoperi cât mai multe cazuri:
+|               - bellman_ford_topo nu funcționează decât pe DAG-uri
+|               - dijkstra_* nu dă rezultatele corecte când există ponderi negative
+|               - niciunul dintre cei 5 algoritmi nu funcționează când există bucle negative
+|               - pentru 4 dintre ei nu are vreo importanță dacă graful este orientat sau nu
+|
++-- /out: fișierele cu rezulatele așteptate ale testelor de intrare
+|
++-- /time: fișierele cu timpii de rulare în urma executării celor 5 algoritmi pe testele de mai sus
+|
++-- graph.h: clasa Graph, care implementează un o structură de tip graf cu liste de adiacență,
+|            plus metode auxiliare și antetele funcțiilor care implementează algoritmii
+|
++-- dijkstra.cpp:
+|   |
+|   +-- dijstra_classic(): algoritmul lui Dijkstra neoptimizat
+|   |
+|   +-- dijkstra_heap(): algoritmul lui Dijkstra optimizat prin folosirea unui heap
+|
++-- bellman_ford.cpp:
+|   |
+|   +-- bellman_ford_classic(): algoritmul Bellman-Ford neoptimizat
+|   |
+|   +-- bellman_ford_queue(): algoritmul Bellman-Ford optimizat prin folosirea unei cozi
+|
++-- bellman_ford_topo.cpp:
+|   |
+|   +-- bellman_ford_topo(): algoritmul Bellman-Ford optimizat pentru DAG-uri, 
+|   |                           prin sortare topologică
+|   |
+|   +-- is_dag(): verifică dacă graful este un DAG (neorientat și aciclic)
+|   |
+|   +-- has_cycle(): verifică dacă poate ajunge la o buclă în graf, pornind dintr-un anumit nod
+|   |
+|   +-- dfs(): depth first search (parcurgere în adâncime) -> folosită la sortarea topologică
+|   |
+|   +-- topological_sort(): sortează toate nodurile într-o ordine topologică
+|
++-- test_gen.cpp: program pentru generarea pseudo-aleatoare de grafuri
+|        * dacă la compilare primește parametrul -D DAG, va genera un graf neorientat aciclic
+|        * cu parametrul -D NEG, va genera un graf cu ponderi atât pozitive, cât și negative
+|        * cu parametrul -D BIG=max_val, va genera un graf cu ponderi între 1 și max_val
+|        * programul trebuie rulat cu 4 parametrii:
+|            -- numărul dorit de noduri
+|            -- numărul dorit de arce
+|            -- nodul de pornire
+|            -- numele fișierului în care să fie scrise valorile rezultate
+|
++-- test_algo_time.cpp: program care testează toți cei 5 algoritmi pe fiecare fișier de intrare
+|                       și scrie în fișierele corespunzătoare .time din directorul ./time timpii
+|                       de rulare, pentru a le putea fi comparată mai apoi eficiența
+|         
++-- test_algo_res.cpp: program care testează unul din cei 5 algoritmi pe fiecare fișier de intrare
+|                      și scrie în fișierele corespunzătoare .out din directorul ./other_out 
+|                      distanțele calculate. Programul primește ca parametru de la tastatură un ID:
+|                       * 1 pentru algoritmul dijstra_classic 
+|                       * 2 pentru algoritmul dijkstra_heap
+|                       * 3 pentru algoritmul bellman_ford_classic
+|                       * 4 pentru algoritmul bellman_ford_queue
+|                       * 5 pentru algoritmul bellman_ford_topo
+|         
++-- comp_files.cpp: program care compară fișierele obținute în urma rulării unui algoritm (din
+|                       directorul ./other_out) cu cele din ./out și afișează la consolă, pentru
+|                       fiecare, OK dacă au același conținut, sau WRONG în caz contrar.
+|                       (va afișa WRONG în cazurile în care algoritmul nu poate fi aplicat
+|                       pentru tipul de graf din fișierul de intrare)
+|
++-- algo.h: conține 3 funcții lambda auxiliare suplimentare și antetul funcției shortest_path()
+|        * read_input(): pentru citirea datelor de intrare și construirea grafului
+|        * print_dist(): afișează rezultatele obținute în urma rulării unui algoritm
+|        * print_time(): afișează timpul de rulare al unui algoritm
+|
++-- algo.cpp: implementează funcția shortest_path(), care va crea un graf din listele de adiacență
+|                primite ca parametru și va aplica algoritmul Bellman-Ford optimizat cu o coadă.
+|                Din fișierele .time rezultate putem observa că pe grafuri rare acest algoritm 
+|                este cel mai rapid dintre cele 5, dar, pe grafuri dense, algoritmul Bellman-Ford 
+|                optimizat pentru DAG-uri (prin sortarea topologică) este cel mai eficient. Totuși,
+|                acesta din urmă funcționează numai pentru grafuri orientate aciclice. Pe de altă
+|                parte, algoritmul lui Dijkstra (optimizat cu heap sau în varianta simplă) se
+|                comportă mai bine decât Bellman-Ford pe grafuri dense, dar nu va da rezultatul
+|                corect atunci când în graf există ponderi negative. Deci, pentru a acoperi toate
+|                cazurile posibile, chiar dacă nu este întotdeauna cel mai rapid, și nu va funcționa
+|                în cazul existenței unei bucle de cost total negativ (la fel ca niciunul dintre
+|                cei 5 algoritmi implementați), am ales pentru bonus acest algoritm.
+|
++-- main.cpp: demo folosit doar pentru testarea algoritmului ales pentru bonus
+
+# Makefile:
+
+    * build: creează algo.o
+    * main: având un fișier main.cpp, cu rutina main(), care va apela funcția shortest_path() din
+            algo.h / algo.cpp, regula va genera un executabil main, care poate fi folosit pentru
+            testarea algorimului ales pentru bonus
+    * test_algo_time: creează executabilul test_algo_time, folosit pentru testarea timpilor de 
+                        rulare ai algoritmilor
+    * test_algo_res: creează executabilul test_algo_res, folosit pentru calcularea distanțelor 
+                        minime rulând câte un algoritm ales
+    * test_gen: creează executabilul test_gen, folosit pentru generarea de grafuri
+    * comp_files: creează executabilul comp_files, cu care putem verifica rezultatele obținute
+                        în urma rulării unui algoritm cu test_algo_res
+    * clean: șterge toate fișierele .o

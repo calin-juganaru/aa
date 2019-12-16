@@ -1,0 +1,305 @@
+\documentclass[a4paper]{article} 
+\usepackage{graphics}
+\usepackage[english]{babel}
+\usepackage{color}
+\usepackage{hyperref}
+\usepackage{amsmath}
+\usepackage{enumerate}
+\usepackage[a4paper, total={14.5cm, 24cm}]{geometry}
+
+\title{\Huge \bfseries Drumuri minime \^in graf \\[1.2cm]  \Large Problema g\u asirii drumului de cost minim dintre dou\u a noduri ale unui graf \\[10cm]} \par
+
+\author{\\[1cm] \Large C\u alin Jug\u anaru, 324CA 
+	\\[1.8cm] Universitatea POLITEHNICA din Bucure\c sti 
+	\\[0.4cm] Facultatea de Automatic\u a \c si Calculatoare
+	\\[2cm] calin\_vlad.juganaru@stud.acs.upb.ro \\}
+
+\addto{\captionsenglish}{\renewcommand{\refname}{Bibliografie\\}}
+
+\begin{document}
+\maketitle
+\pagebreak
+
+\title{\huge \center Drumuri minime \^in graf} \\
+\maketitle
+
+% -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{section}{Descrierea problemei}
+\begin{subsection}{No\c tiuni introductive\\}
+	
+	Dat fiind un graf \textbf{G = (V, E)}, adic\u a o pereche de mul\c timi de noduri (\textbf{V}), respectiv leg\u aturi dintre acestea (\textbf{E}), numite \c si muchii sau arce, SSSP \textit{(Single Source Shortest Path)} \^ inseamn\u a problema g\u asirii drumului de cost minim de la un nod ales la toate celelalte din graf. Acest cost minim reprezint\u a suma ponderilor arcelor care formeaz\u a drumul optim g\u asit \^ intre dou\u a noduri. Numim graf ponderat un graf ce are asociat c\^ ate un cost (o pondere) pentru fiecare arc din mul\c timea \textbf{E}. Pentru grafurile neponderate putem considera c\u a toate arcele au cost unitar \c si acesta va fi un caz particular al problemei studiate. \par
+	Pe de alt\u a parte, exist\u a \c si problema APSP \textit{(All Pairs Shortest Path)}, unde ne propunem s\u a g\u asim drumul de cost minim dintre oricare dou\u a noduri dintr-un graf, dar \^ in lucrarea de fa\c t\u a ne vom ocupa doar de primul caz, acela al unui nod de pornire fixat. Este evident faptul c\u a problema SSSP este un caz particular al problemei APSP: dintre toate perechile de noduri le agelem doar pe acelea ce con\c tin nodul fixat. De asemenea, un caz particular al problemei SSSP este aflarea drumului de cost minim dintre dou\u a noduri fixate. \par
+	Vom considera toate grafurile la care ne vom referi \^ in aceast\u a lucrare ca fiind orientate, fiindc\u a orice graf neorientat poate fi privit ca unul orientat, dar bidirec\c tional. Acest detaliu este relevant pentru al treilea algoritm ce va fi prezentat, fiindc\u a acela func\c tioneaz\u a numai pe grafuri orientate aciclice. \\[1cm]
+
+\end{subsection}
+
+% -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{subsection}{Solu\c tiile alese \c si aplica\c tia practic\u a\\}
+
+	Consider\^ and o hart\u a a unei \c t\u ari, format\u a dintr-o mul\c time \textbf{V} de localit\u a\c ti \c si o mul\c time \textbf{E} de drumuri ce le leag\u a, apoi asociind c\^ ate o pondere fiec\u arui drum, ce va reprezenta lungimea sa real\u a, aceast\u a structur\u a poate fi descris\u a de un graf ponderat \textbf{G = (V, E)}.  Dac\u a ne propunem s\u a g\u asim drumul de cost minim (\^ in cazul de fa\c t\u a, cel cu distan\c ta parcurs\u a cea mai mic\u a) dintre capital\u a \c si toate celelalte mari ora\c se din \c tar\u a, un algoritm de SSSP ne va da solu\c tia problemei c\u autate.  De asemenea, \^ in cazul \^in care c\u aut\u am doar traseul cel mai scurt dintre dou\u a ora\c se alese, putem ob\c tine solu\c tia folosind un astfel de algoritm. \par
+	Algoritmii de tip SSSP pe care \^ ii vom prezenta \c si compara \^ in lucrarea de fa\c t\u a sunt: algoritmul lui Edsger Dijkstra, algoritmul Bellman-Ford (\^ int\^ alnit uneori ca Bellman-Ford-Moore) \c si o variant\u a modificat\u a celui din urm\u a, optimizat\u a pentru grafuri orientate aciclice. Pentru primii doi algoritmi, vom studia \c si c\^ ate o variant\u a u\c sor modificat\u a a lor, prin folosirea unei anumite structuri de date \^ in locul unei itera\c tii prin mul\c timea nodurilor. \par
+	Ca exeplu practic des \^ int\^ alnit \^ in via\c ta de zi cu zi, Google Maps folose\c ste pentru calcularea rutelor optime un algoritm SSSP ce are la baz\u a algoritmul lui Dijkstra. \\[1cm]
+
+\end{subsection}
+
+% -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{subsection}{Criterii de evaluare \\}
+	Cei trei algoritmi ale\c si vor fi implementa\c ti pentru testare \^ in limbajul C++17 \c si nu vor avea optimiz\u ari semnificative ce s\u a depind\u a de limbajul folosit, ci doar de structurile de date auxiliare, pentru a putea compara obiectiv eficien\c ta algoritmilor \c si nu a implement\u arii acestora. \par
+	Pentru testarea func\c tionalit\u a\c tii algoritmilor vom genera un set de fi\c siere ce con\c tin de date de intrare sub forma unor liste de adiacen\c t\u a c\^ at mai variate: grafuri cu num\u ar de noduri \c si arce de ordinul zecilor, sutelor \c si chiar miilor, grafuri dense \c si rare, conexe \c si neconexe, grafuri cu ponderi ale arcelor foarte distan\c tate sau apropiate de o medie, \c si cazuri cu ponderi unitare sau negative. Ultimul exemplu este important deoarece algoritmul lui Dijkstra nu func\c tioneaz\u a atunci c\^ and exist\u a costuri negative \^ in graf (nu va da r\u aspunsul corect), pe c\^ and algoritmul Bellman-Ford func\c tioneaz\u a de obicei \^ in acest caz, dar nu \c si atunci c\^ and exist\u a bucle cu costul total negativ (ar \^ insemna ca la fiecare parcurgere a buclei s\u a ob\c  tinem un cost mai mic dec\^ at la cea anterioar\u a). \^ Intr-un asemenea caz, vom considera c\u a nu exist\u a un drum de cost minim \^ intre oricare dou\u a noduri din graf, la fel \c si atunci c\^ and graful nu este conex, deoarece este imposibil s\u a ajungem \^ in anumite noduri pornind din cel stabilit.
+\par
+	Mai mult dec\^ at at\^ at, vom testa variantele originale ale algoritmilor men\c tiona\c ti \c si variante optimizate, care folosesc anumite structuri de date (cozi / cozi de prioritate) \c si reduc ordinul de complexitate, iar grafurile vor fi re\c tinute \^ in memorie at\^ at sub forma unor liste de adiacen\c t\u a, c\^ at \c si ca matrici, pentru realizarea unor compara\c tii ale diferitelor abord\u ari. \par
+	Pentru verificarea corectitudinii algoritmilor putem genera toate drumurile posibile \^ in graf pornind de la un nod fixat \c si s\u a adun\u am costurile de pe arcele parcurse, g\u asind drumurile de cost minim \c si compar\^ andu-le cu rezultatele ob\c tinute dup\u a executarea algoritmilor implementa\c ti. Totu\c si, aceast\u a metod\u a poate fi folosit\u a doar pentru date de intrare suficient de mici, av\^ and \^ in vedere resursele hardware limitate. \par
+	Aceast\u a metod\u a 'empiric\u a', totu\c si, nu demonstreaz\u a corectitudinea global\u a a algoritmilor, ci doar local\u a, pe datele de intrare generate de noi. Din rularea a suficient de multe astfel de teste putem considera c\u a ace\c sti algoritmi func\c tioneaz\u a \c si \^ in celelalte cazuri, dar, pentru demonstrarea corectitudinii lor globale vom folosi metode teoretice de analiz\u a a corectitudinii. \\[1cm]
+
+\end{subsection}
+\end{section}
+
+% -----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{section}{Prezentarea solu\c tiilor problemei\\}
+
+\begin{subsection}{Descrierea algoritmilor \c si analiza complexit\u a\c tii\\}
+
+\begin{enumerate}
+
+	\item \textbf{Algoritmul lui Dijkstra clasic} \\[0.4cm]
+	Acest algoritm se bazeaz\u a pe dou\u a concepte: acela de nod finalizat, adic\u a un nod aflat la distan\c ta minim\u a fa\c t\u a de cel de pornire, care va fi folosit apoi la calcularea distan\c telor p\^ an\u a la cele adiacente lui, \c si de muchie relaxat\u a, o muchie ce porne\c ste dintr-un nod finalizat \c si ponderea acesteia este folosit\u a la procedeul de relaxare. Pentru a calcula distan\c ta minim\u a de la un nod fixat la toate celelate dintr-un graf \textbf{G = (V, E)}, algoritmul va efectua \textbf{$|$V$|$} (num\u arul de noduri ale grafului) itera\c tii, \^ in care va c\u auta un nod nefinalizat (nefolosit la calculul altor distan\c te) din mul\c timea nodurilor, av\^ and distan\c ta minim\u a fa\c t\u a de surs\u a \c si va actualiza distan\c tele minime calculate (va relaxa muchiile) p\^ an\u a la nodurile adiacente acestuia dac\u a distan\c ta minim\u a p\^ an\u a la acest nod + costul muchiei dintre acesta \c si un vecin este mai mic\u a dec\^ at distan\c ta actual\u a\cite{dijkstra}. \\
+Vom deduce complexitatea algoritmului analiz\^ and liniile 6, 9 \c si 14 din pseudocodul de mai jos. Dac\u a desfacem bucla de la linia 9 \c si o ata\c sam celorlalte dou\u a ca \c si cum ar lucra independent una de cealalt\u a, vom ob\c tine pentru prima o complexitate \textbf{O($|$V$|$$\cdot$$|$V$|$)} = \textbf{O($|$V$|^2$)}. \\
+Pentru cea de-a doua este necesar\u a o men\c tiune: a itera prin toat\u a mul\c timea nodurilor (\textbf{V}), \c si, pentru fiecare nod, prin toate muchiile (arcele) care pornesc din acesta, \^ inseamn\u a, de fapt, a itera prin mul\c timea tuturor muchiilor (\textbf{E}). Astfel, complexitatea celei de-a doua bucle va fi \textbf{O($|$E$|$)}, deci algoritmul are complexitatea total\u a \textbf{O($|$V$|^2$ +$|$E$|$)}. \\
+Observ\ u am c\u a func\c tia depinde de valorile ambelor cardinale, dar, \^ in cazul unui graf dens, \textbf{$|$E$|$} are cam acela\c si ordin de m\u arime cu de $\frac{|\textbf{V}|^2}{2}$. Cum \^ in analiza complexit\u a\c tii nu lu\u am \^ in considerare constantele, putem concluziona apartenen\c ta la \textbf{O($|$V$|^2$)}. \^ In cazul unui graf rar, \textbf{$|$E$|$} este neglijabil fa\c t\u a de \textbf{$|$V$|^2$}) , deci nu-l vom lua \^ in considerare. \\
+
+	1 \quad dijkstra\_classic(G = (V, E), start) \\
+	2 \quad\quad\quad N = $|V|$ \\
+	3 \quad\quad\quad dist[1...N] = $\infty$ \\
+	4 \quad\quad\quad finalizat[1...N] = false \\
+	5 \quad\quad\quad dist[start] = 0\\[0.2cm]
+	6 \quad\quad\quad  repet\u a de N ori \\
+	7 \quad\quad\quad\quad\quad dist\_min = $\infty$ \\
+	8 \quad\quad\quad\quad\quad nod\_min = start \\ \\
+	9 \quad\quad\quad\quad\quad pentru $\forall$ nod $\in$ V \\
+	10 \quad\quad\quad\quad\quad\quad dac\u a !finalizat[nod] \& (dist\_min $>$ dist[nod]) \\
+	11 \quad\quad\quad\quad\quad\quad\quad\quad dist\_min = dist[nod] \\
+	12 \quad\quad\quad\quad\quad\quad\quad\quad nod\_min = nod \\[0.2cm]
+	13 \quad\quad\quad\quad\quad\quad\ finalizat[nod] = true \\ \\
+	14 \quad\quad\quad\quad\quad\quad\ pentru $\forall$ arc = (nod, vecin, cost) $\in$ E \\
+ 	15 \quad\quad\quad\quad\quad\quad\quad\quad dac\u a dist[vecin] $>$ dist[nod\_min] + cost \\
+	16 \quad\quad\quad\quad\quad\quad\quad\quad\quad\quad  dist[vecin] = dist[nod\_min] + cost \\[0.2cm]
+	17 \quad\quad\quad return dist \\[0.3cm]
+
+%----------------------------------------------------------------------------------------------------------------------------------------------------------------
+	\item \textbf{Algoritmul lui Dijkstra cu heap} \\[0.4cm]
+	Pentru a optimiza complexitatea de timp a algoritmului precedent, \^ in locul c\u aut\u arii liniare (parcurgerea de la 1 la \textbf{$|$V$|$}) a nodului nefinalizat de distan\c t\u a minim\u a, putem folosi o structur\u a de date de tip \textit{min\_heap}, sau o coad\u a de priorit\u a\c ti bazat\u a pe acesta, \^ in care inser\u am ini\c tial nodul de pornire, apoi, c\^ at timp heap-ul nu este gol, extragem un nod \c si actualiz\u am distan\c tele p\^ an\u a la vecinii s\u ai (relax\u am muchiile), la fel ca mai sus, iar dac\u a am g\u asit o nou\u a distan\c t\u a minim\u a vom folosi acest nod vecin la calculul urm\u atoarelor distan\c te, ad\u aug\^ andu-l \^ in heap. Astfel, folosind un \textit{min\_heap}, dup\u a fiecare inserare a unui nod, structura arborescent\u a se va actualiza automat \^ in timp logaritmic, pun\^ and ca r\u ad\u acin\u a nodul cu distan\c ta minim\u a fa\c t\u a de origine, deci am redus acea complexitate de \textbf{O($|$V$|$)} a c\u aut\u arii la \textbf{O($log(|$V$|)$)}.
+\^ In final, am redus complexitatea total\u a a algoritmului la \textbf{O($|$V$|$$\cdot$$log(|$V$|)$)}.
+\\ \\
+	1 \quad dijkstra\_heap(G = (V, E), start) \\
+	2 \quad\quad\quad N = $|V|$ \\
+	3 \quad\quad\quad dist[1...N] = $\infty$ \\
+	4 \quad\quad\quad heap = $\emptyset$ \\
+	5 \quad\quad\quad dist[start] = 0 \\
+	6 \quad\quad\quad heap.push(start) \\ \\
+	7 \quad\quad\quad c\^ at timp heap-ul nu este gol \\
+	8 \quad\quad\quad\quad\quad nod = heap.pop() \\
+	9   \quad\quad\quad\quad\quad pentru $\forall$ arc = (nod, vecin, cost) $\in$ E \\
+ 	10 \quad\quad\quad\quad\quad\quad\quad dac\u a dist[vecin] $>$ dist[nod] + cost \\
+	11 \quad\quad\quad\quad\quad\quad\quad\quad\quad  dist[vecin] = dist[nod] + cost \\
+	12 \quad\quad\quad\quad\quad\quad\quad\quad\quad  heap.push(vecin) \\ \\
+	13 \quad\quad\quad return dist \\ \\
+
+	\item \textbf{Algoritmul Bellman-Ford clasic\cite{bford}} \\[0.4cm]
+	Despre acest algoritm putem spune c\u a este mai simplist, naiv, intuitiv sau chiar \textit{brute-force} dec\^ at oricare dintre cei prezenta\c ti \^ in aceast\u a lucrare: fa\c t\u a de algoritmul lui Dijkstra clasic, nu vom c\u auta un nod nefinalizat sau de distan\c t\u a minim\u a, ci, pur \c si simplu, de \textbf{$|$V$|$} ori vom itera prin mul\c timea de noduri \c si vom \^ incerca actualizarea distan\c telor p\^ an\u a la orice nod adiacent celui curent. 
+\^ In concluzie, efectu\^ and aceast\u a iterare de \textbf{$|$V$|$} ori, ob\c tinem complexitatea algoritmului \textbf{O($|$V$|$$\cdot$$|$E$|$)}.
+	
+	Totu\c si, acest algoritm \c si urm\u atorii doi au un avantaj fa\c t\u a de primii doi: \^ in cazul \^ in care graful con\c tine muchii (arce) cu ponderi negative, algoritmii Dijkstra nu vor genera rezultatele corecte, dar acestea vor func\c tiona. Mai mult dec\^ at at\^ at, dac\u a \^ in urma itera\c tiilor descrise mai sus mai efectueaz\u a la final o iterare prin mul\c timea nodurilor, \^ incearc\u a actualizarea distan\c telor minime calculate \c si g\u ase\c ste o distan\c t\u a \c si mai mic\u a, \^ inseamn\u a c\u a graful con\c tine (cel pu\c tin) o bucl\u a de cost total negativ, deci nu pot fi calculate distan\c tele minime, iar problema noastr\u a nu are solu\c tie. Acest caz ar \^ insemna c\u a la fiecare trecere printr-o astfel de bucl\u a vom ob\c tine o distan\c t\u a mai mic\u a dec\^ at cea anterioar\u a, p\^ an\u a la -$\infty$, iar formularea problemei studiate aici nu impune sau restric\c tioneaz\u a \^ in vreun fel traseul urmat prin graf pentru ob\c tinerea distan\c telor minime, ci doar nodul de pornire. \\
+
+	1 \quad bellman\_ford\_classic(G = (V, E), start) \\
+	2 \quad\quad\quad N = $|V|$ \\
+	3 \quad\quad\quad dist[1...N] = $\infty$ \\
+	4 \quad\quad\quad dist[start] = 0 \\ \\
+	5 \quad\quad\quad repet\u a de N ori \\
+	6  \quad\quad\quad\quad\quad pentru $\forall$ arc = (nod, vecin, cost) $\in$ E \\
+	7 \quad\quad\quad\quad\quad\quad\quad dac\u a dist[vecin] $>$ dist[nod] + cost \\
+	8 \quad\quad\quad\quad\quad\quad\quad\quad\quad  dist[vecin] = dist[nod] + cost \\ \\
+
+	9  \quad\quad\quad pentru $\forall$ arc = (nod, vecin, cost) $\in$ E \\
+	10 \quad\quad\quad\quad\quad dac\u a dist[vecin] $>$ dist[nod] + cost \\
+	11 \quad\quad\quad\quad\quad\quad\quad  $\exists$ un ciclu negativ \\ \\
+	12 \quad\quad\quad return dist \\ \\
+
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+	\item \textbf{Algoritmul Bellman-Ford cu coad\u a} \\[0.4cm]
+	La fel ca \^ in cazul Dijkstra, putem optimiza algoritmul folosind o anumit\u a structur\u a de date pentru \^ inlocuirea unor itera\c tii costisitoare. Dac\u a \^ in locul parcurgerii mul\c timii nodurilor de \textbf{$|$V$|$} ori, folosim o structur\u a de tip coad\u a, complexitatea \^ in cazul cel mai defavorabil va r\u am\^ ane aceea\c si, dar \^ in practic\u a se va dovedi mult mai bun\u a. Algoritmul clasic va parcurge \^ intotdeauna \c si pentru orice date de intrare \^ intreaga mul\c time de noduri, dar, \^ il putem optimiza ad\u aug\^ and \^ in coad\u a numai nodurile folosite pentru relaxarea muchiilor, situa\c tie asem\u an\u atoare nodurilor finalizate din algoritmul lui Dijkstra. Pentru a conserva abilitatea algoritmului de g\u asire a unei bucle negative, vom contoriza fiecare extragere a unui nod din coad\u a; dac\u a acest contor pentru un nod ajunge s\u a fie egal cu \textbf{$|$V$|$}, \^ inseamn\u a c\u a am g\u asit o bucl\u a negativ\u a. \\
+Complexitatea final\u a r\u am\^ ane de \textbf{O($|$V$|$$\cdot$$|$E$|$)}, dar comportamentul real se dovede\c ste a fi mult mai eficient\cite{china} \c si, \^ in unele cazuri, cel mai bun dintre cei cinci algoritmi prezenta\c ti.
+\\
+
+	1 \quad bellman\_ford\_queue(G = (V, E), start) \\
+	2 \quad\quad\quad N = $|V|$ \\
+	3 \quad\quad\quad dist[1...N] = $\infty$ \\
+	4 \quad\quad\quad vizitat[1...N] = 0 \\
+	5 \quad\quad\quad coad\u a = $\emptyset$ \\ \\
+	6 \quad\quad\quad dist[start] = 0 \\ 
+	7 \quad\quad\quad coad\u a.push(start) \\\\
+	8 \quad\quad\quad c\^ at timp coada nu este goal\u a \\
+	9  \quad\quad\quad\quad\quad nod = coad\u a.pop() \\
+	10  \quad\quad\quad\quad\quad vizitat[nod] ++ \\
+
+	11 \quad\quad\quad\quad\quad dac\u a vizitat[nod] == N \\
+	12 \quad\quad\quad\quad\quad\quad\quad  $\exists$ un ciclu negativ \\
+
+	13  \quad\quad\quad\quad\quad pentru $\forall$ arc = (nod, vecin, cost) $\in$ E \\
+	14 \quad\quad\quad\quad\quad\quad\quad dac\u a dist[vecin] $>$ dist[nod] + cost \\
+	15 \quad\quad\quad\quad\quad\quad\quad\quad\quad  dist[vecin] = dist[nod] + cost \\
+	16 \quad\quad\quad\quad\quad\quad\quad\quad\quad  coad\u a.push(vecin) \\
+
+	17 \quad\quad\quad return dist \\ \\
+
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+	\item \textbf{Algoritmul Bellman-Ford cu sortare topologic\u a\cite{clrs}} \\[0.4cm]
+	Pentru cazul special \^ in care graful studiat este un DAG (\textit{Directed Acyclic Graph} / graf orientat aciclic), pe acesta poate fi aplicat\u a o sortare topologic\u a, care, prin defini\c tie, \^ inseamn\u a o ordonare liniar\u a a nodurilor sale, astfel \^ inc\^ at, pentru fiecare arc \textbf{(x, y)} din \textbf{E}, nodul \textbf{x} va precede nodul \textbf{y} \^ in aceast\u a ordonare. Defini\c tia este echivalent\u a cu: date fiind dou\u a noduri \textbf{x} \c si \textbf{y} din graf, iar \textbf{x} precede \textbf{y} \^ in orice sortare topologic\u a a grafului, rezult\u a c\u a nu exist\u a un drum de la nodul \textbf{y} la nodul \textbf{x}. \\
+	Din aceast\u a proprietate rezult\u a c\u a ar fi inutil s\u a c\u aut\u am o distan\c t\u a minim\u a de la \textbf{y} la \textbf{x}, deci este suficient s\u a parcurgem nodurile \^ intr-o ordine topologic\u a \c si numai atunci s\u a \^ incerc\u am relaxarea arcelor. \\
+	Sortarea topologic\u a poate fi realizat\u a \^ in dou\u a moduri: prin metoda gradelor sau printr-o parcurgere \^ in ad\^ ancime a tuturor nodurilor din graf \c si re\c tinerea lor \^ intr-o list\u a \^ in ordinea invers\u a a ie\c sirii din func\c tia de parcurgere, variant\u a pe care am implementat-o pentru testarea algoritmilor. Complexitatea oric\u areia dintre cele doua variante de sortare topologic\u a este \textbf{O($|$V$|$$+$$|$E$|$)}, iar a algoritmului \^ in sine, analiz\^ and liniile 5 \c si 6 de mai jos, este \textbf{O($|$E$|$)}, deci ob\c tinem o complexitate final\u a de \textbf{O($|$V$|$$+$$|$E$|$)}. \\\\
+
+	1 \quad bellman\_ford\_topo(G = (V, E), start) \\
+	2 \quad\quad\quad ord\_topo = sortare\_topologic\u a(G) \\
+	3 \quad\quad\quad dist[1...N] = $\infty$ \\
+	4 \quad\quad\quad dist[start] = 0 \\ 
+
+	5 \quad\quad\quad pentru $\forall$ nod $\in$ ord\_topo \\
+	6  \quad\quad\quad\quad\quad pentru $\forall$ arc = (nod, vecin, cost) $\in$ E \\
+	7 \quad\quad\quad\quad\quad\quad\quad dac\u a dist[vecin] $>$ dist[nod] + cost \\
+	8 \quad\quad\quad\quad\quad\quad\quad\quad\quad  dist[vecin] = dist[nod] + cost \\
+
+	9 \quad\quad\quad return dist \\ \\
+
+\end{enumerate}
+
+\end{subsection}
+
+%-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{subsection}{Avantaje \c si dezavantaje\\}
+
+	P\^ an\u a s\u a analiz\u am comportamentul \^ in practic\u a al algoritmilor prezenta\c ti, putem deduce \c si men\c tiona c\^ ateva avantaje \c si dezavantaje ale acestora. \par
+	C\^ and graful con\c tine muchii de ponderi negative, algoritmul lui Dijkstra (optimizat sau nu) nu va da \^ intotdeauna rezultatele corecte: acesta este construit pe baza axiomei c\u a ponderile sunt pozitive, deci ad\u aug\^ and \^ inc\u a o muchie la un traseu, acesta nu poate deveni mai scurt. Fiindc\u a folose\c ste optimul local pentru a ajunge la optimul global, dup\u a ce finalizeaz\u a un nod, nu-l va mai folosi ulterior la relaxarea muchiilor, c\^ and exist\u a posibilitatea de a lua \^ in calcul o muchie de cost negativ incident\u a \^ in acel nod \c si a ob\c tine o distan\c t\u a mai mic\u a dec\^ at cea calculat\u a anterior. \par
+	Algoritmul Bellman-Ford (toate cele trei variante prezentate) nu are aceast\u a problem\u a fiindc\u a va lua \^ in calcul toate nodurile \c si toate muchiile. Datorit\u a acestei calit\u a\c ti poate descoperi existen\c ta unei bucle negative \^ in graf, caz \^ in care niciun algoritm dintre ace\c stia nu va da r\u aspunsul corect, fiindc\u a problema nu are solu\c tie. Este vizibil din descrierile de mai sus c\u a acest avantaj vine cu dezavantajul unei complexit\u a\c ti mai mari. \par
+	Ultimul algoritm este indubitabil cel mai eficient dintre ace\c stia, din punct de vedere al complexit\u a\c tii, dar poate fi aplicat pe o mul\c time restr\^ ans\u a de grafuri, neap\u arat orientate \c si aciclice, cu orice fel de ponderi. De asemenea, to\c ti ceilal\c ti algoritmi pot func\c tiona indiferent dac\u a graful este orientat sau nu. \par
+	Nu \^ in ultimul r\^ and, doi dintre algoritmi, cei 'clasici', sunt complet neoptimiza\c ti, deci au un clar dezavantaj \^ in fa\c ta celorlal\c ti trei, dar prezentarea lor este util\u a \^ in scop didactic. \\ \\
+
+\end{subsection}
+
+\end{section}
+
+%-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{section}{Evaluarea algoritmilor\\}
+\begin{subsection}{Setul de teste\\}
+
+	Av\^ and \^ in vedere restric\c tia impus\u a asupra num\u arului de teste (\^ intre 5 \c si 10), am ales generarea a 10 teste care s\u a cuprind\u a cazuri posibile pentru structura \c si dimensiunea grafului, precum \c si a ponderilor:\\
+\begin{enumerate}
+	\item graf orientat aciclic rar, cu ponderi unitare
+          \item graf orientat aciclic rar, cu ponderi pozitive \c si negative 
+          \item graf orientat aciclic rar, cu ponderi pozitive mici
+          \item graf orientat aciclic rar, cu ponderi pozitive mari
+          \item graf orientat rar, cu cicluri \c si ponderi pozitive
+          \item graf orientat aciclic dens, cu ponderi unitare
+          \item graf orientat aciclic dens, cu ponderi pozitive \c si negative 
+          \item graf orientat aciclic dens, cu ponderi pozitive mici
+          \item graf orientat aciclic dens, cu ponderi pozitive mari
+	\item graf orientat dens, cu cicluri \c si ponderi pozitive \\\\
+\end{enumerate}
+\end{subsection}
+
+\begin{subsection}{Rezultatele ob\c tinute\\}
+
+\begin{center}
+\begin{tabular}{ | c | c | c | c | c | c | } 
+\hline
+	   & test 1 & test 2 & test 3 & test 4 & test 5 \\
+\hline
+	dijkstra\_classic & 0.00453704 & 0.00865469 & 0.00854924 & 0.00447580 & 0.00448099 \\ 
+\hline
+	dijkstra\_heap & 0.00010744 & 0.00013690 & 0.00020867 & 0.00017749 & 0.00031419 \\
+\hline
+	bellman\_ford\_classic & 0.02901970 & 0.04250350 & 0.05664500 & 0.03530740 & 0.04951330 \\
+\hline
+	bellman\_ford\_queue & 0.00003947 & 0.00005196 & 0.00007507 & 0.00006429 & 0.00018871 \\
+\hline
+	bellman\_ford\_topo & 0.00013729 & 0.00016273 & 0.00017764 & 0.00014562 & -------------- \\
+\hline
+\end{tabular}
+\newline
+\newline
+\end{center}
+
+\begin{center}
+\begin{tabular}{ | c | c | c | c | c | c | } 
+\hline
+	 & test 6 & test 7 & test 8 & test 9 & test 10 \\
+\hline
+	dijkstra\_classic & 0.00141310 & 0.0014464 & 0.00259722 & 0.00282810 & 0.00293342 \\ 
+\hline
+	dijkstra\_heap & 0.00166487 & 0.0653319 & 0.00210536  & 0.00293078 & 0.00787709 \\
+\hline
+	bellman\_ford\_classic & 0.20363700 & 0.2059870 & 0.34725600 & 0.49071700 & 0.92628900 \\
+\hline
+	bellman\_ford\_queue & 0.00204445 & 0.0190473 & 0.00285553 & 0.00445682  & 0.01327470 \\
+\hline
+	bellman\_ford\_topo & 0.00073198 & 0.0009147 & 0.00109577 & 0.00149374 & -------------- \\
+\hline
+\end{tabular}
+\newline
+\newline
+
+\end{center}
+
+\end{subsection}
+
+\begin{subsection}{Sistemul de calcul folosit\\}
+	Algoritmii au fost implementa\c ti \c si testa\c ti pe o ma\c sin\u a cu procesor Intel Core i5, cu 2.6GHz \c si 8GB RAM (7.85GB disponibili), folosind compilatorul GNU g++ verisunea 8.1.0, pe un sistem de operare Linux pe 64 de bi\c ti. \\[0.2cm]
+\end{subsection}
+\end{section}
+
+%-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{section}{Concluzii\\}
+
+	Din analiza f\u acut\u a asupra algoritmilor ale\c si, \^ in sec\c tiunea 2, \c si din evaluarea lor prezentat\u a \^ in sec\c tiunea 3 putem trage urm\u atoarele concluzii:
+
+\begin{enumerate}
+	\item \^ In practic\u a vom exclude din start algoritmul Bellman-Ford neoptimizat: este de departe cel mai ineficient, \c si poate fi oric\^ and \^ inlocuit de varianta optimizat\u a prin folosirea unei cozi.
+
+	\item Pentru grafurile rare, Bellman-Ford optimizat cu coad\u a se dovede\c ste cel mai rapid, urmat de Dijkstra cu heap \c si cel cu sortarea topologic\u a (valorile acestora dou\u a sunt \^ in medie foarte apropiate).
+
+	\item \^ In cazul unui DAG dens, cel mai eficient algoritm este clar Bellman-Ford optimizat cu sortarea topologic\u a. Cum verificarea unui graf dac\u a este sau nu DAG poate fi facut\u a \^ in maxim \textbf{O($|$V$|$$+$$|$E$|$)}, cu o parcurgere \^ in ad\^ ancime \c si cu ie\c sirea imediat\u a din func\c tie c\^ and g\u asim o bucl\u a (consider\u am inclusiv c\u a o muchie bidirec\c tional\u a este o bucl\u a), este rezonabil s\u a facem \^ int\^ ai aceast\u a verificare \c si apoi s\u a aplic\u am algoritmul cel mai eficient. Pentru determinarea densit\u a\c tii unui graf este necesar\u a o simpl\u a compara\c tie a num\u arului de noduri cu num\u arul de muchii.
+	
+	\item Pentru grafurile dense \c si f\u ar\u a ponderi negative, dar indiferent de m\u arimea lor, Dijkstra clasic, Dijkstra cu heap \c si Bellman-Ford cu coad\u a par a se comporta f\u ar\u a diferen\c te semnificative la timpul de execu\c tie.
+
+	\item Chiar dac\u a \^ in teorie Dijsktra clasic are complexitatea mai mare dec\^ at cel cu heap, pe grafurile dense, cu cicluri \c si, bine\^ in\c teles, cu ponderi pozitive, acesta este semnificativ mai rapid (de peste dou\u a ori). \\
+
+\end{enumerate}
+\end{section}
+\pagebreak
+
+%-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+\begin{thebibliography}{9}
+
+\bibitem{dijkstra}
+Dijkstra, E. W. (1959). A note on two problems in connexion with graphs. Numerische Mathematik. 1: 269-271
+Addison-Wesley, Reading, Massachusetts, 1993.
+ 
+\bibitem{bford} 
+Bellman, Richard (1958). On a routing problem. Quarterly Applied Mathematics 16, 87-90. 
+ 
+\bibitem{clrs} 
+Cormen, Thomas H., Leiserson, Charles E., Rivest, Ronald L., Stein, Clifford. Introduction to Algorithms. 1990. MIT Press.
+
+\bibitem{china} 
+Wei Zhang, Hao Chen, Chong Jiang, Lin Zhu.
+Improvement And Experimental Evaluation Bellman-Ford Algorithm.
+International Conference on Advanced Information and Communication Technology for Education (ICAICTE) 2013.
+
+\end{thebibliography}
+\end{document}

@@ -1,0 +1,5 @@
+    dijkstra classic: 0.007988
+    dijkstra    heap: 0.000188
+bellman-ford classic: 0.062389
+bellman-ford   queue: 7.2e-05
+bellman-ford    topo: 0.00017
